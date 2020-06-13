@@ -30,8 +30,8 @@ def main():
 
     path = Path(args.path)
     out_path = calc_path(path, args.prefix, args.out)
-    if not path.exists():
-        raise ValueError(f'File "{path}" do not exist.')
+    if not path.is_file():
+        raise ValueError(f'File "{path}" is not file or do not exist.')
 
     out, count = highlight(path, out_path)
     print(f'Saving to "{out}" with {count} highlights.')
