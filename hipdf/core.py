@@ -14,8 +14,8 @@ def highlight(file_path: PathLike, out: Optional[PathLike] = None):
     count = 0
     doc = fitz.open(file_path)
     try:
-        for i in range(doc.pageCount):
-            page = doc.loadPage(i)
+        for i in range(doc.page_count):
+            page = doc.load_page(i)
             count += _highlight_page(page)
         out = _generate_out_path(out, file_path, count)
         doc.save(str(out))
@@ -26,16 +26,18 @@ def highlight(file_path: PathLike, out: Optional[PathLike] = None):
 
 def _highlight_page(p):
     count = 0
-    words = list(map(Text, p.getTextWords()))
+    words = list(map(Text, p.get_text_words()))
     for i, v in enumerate(words):
         if rule.check(i, v, words):
             count += 1
             rect = fitz.Rect(v.location)
-            annot = p.addHighlightAnnot(rect)
+            annot = p.add_highlight_annot(rect)
             color = annot.colors
-            color['stroke'][:2] = 0.0, 0.0
-            annot.setColors(color)
-            annot.setOpacity(0.2)
+            stroke = list(color['stroke'])
+            stroke[:2] = 0.0, 0.0
+            color['stroke'] = stroke
+            annot.set_colors(color)
+            annot.set_opacity(0.2)
             annot.update()
     return count
 
